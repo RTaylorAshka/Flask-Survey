@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Survey Viewer{% endblock %}
+
+
+
+
+{% block content %}
+
+<h1>Question {{question_num}}</h1>
+
+<h3>{{question.question}}</h3>
+
+<form action="/response-handler">
+    {% for choice in question.choices %}
+    {% if choice == question.choices[0] %}
+    <input type="radio" name="user-choice" value="{{choice}}" id="{{choice}}" checked> <label
+        for="{{choice}}">{{choice}}</label>
+    {% else %}
+    <input type="radio" name="user-choice" value="{{choice}}" id="{{choice}}"> <label
+        for="{{choice}}">{{choice}}</label>
+    {% endif %}
+    {% endfor %}
+    <button>Submit</button>
+</form>
+
+
+
+
+{% endblock %}
