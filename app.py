@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, flash
+from flask import Flask, request, render_template, redirect, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 import surveys
 
@@ -10,11 +10,24 @@ resposes = []
 
 
 
+
+
 qued = 0
 
 @app.route('/')
 def survey_home():
+    
+    check_session()
 
+    
+
+    print("SESSION: ")
+    print(session['responses'])
+
+    # session['responses'] = responses
+
+    # print("SESSION: ")
+    # print(responses)
     
     return render_template('homepage.html', title=surveys.satisfaction_survey.title, instructions=surveys.satisfaction_survey.instructions, question_num=qued)
 
@@ -23,12 +36,14 @@ def get_question(num):
     global qued
     global responses
 
+    check_session()
+
     if len(resposes) == len(questions):
         flash('Survey already completed!')
         return redirect('/thank-you')
     
-    print(num)
-    print(qued)
+    # print(num)
+    # print(qued)
 
     num = int(num)
 
@@ -47,11 +62,12 @@ def get_question(num):
 @app.route('/response-handler')
 def response_handler():
     global qued
-    
+    global resposes
 
     
     
     resposes.append(request.args.get('user-choice'))
+    session['responses'] = resposes
     
     
     
@@ -66,4 +82,13 @@ def response_handler():
 
 @app.route('/thank-you')
 def thank_user():
+    print("Complete survey: ")
+    print(session['responses'])
     return render_template('thanks.html')
+    
+
+def check_session():
+    global resposes
+
+    if session.get('responses', False):
+        resposes = session['responses']
